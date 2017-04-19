@@ -34,6 +34,13 @@ describe Oystercard do
     it "should raise an error if we try to touch in with a balance of less than 1" do
       expect { subject.touch_in }.to raise_error 'Your balance is below 1 so you cannot travel'
     end
+
+    it "should remember the entry station after we touch in" do
+      station1 = double('station')
+      allow(station).to receive(:name) {'waterloo'}
+      subject.top_up(1)
+      expect(subject.touch_in).to eq 'waterloo'
+    end
       
   end
 
