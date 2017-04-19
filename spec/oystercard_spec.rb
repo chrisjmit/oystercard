@@ -19,12 +19,6 @@ describe Oystercard do
       expect { subject.top_up(100) }.to raise_error 'You cannot exceed a balance of 90'
     end
   end
-  
-  describe '#deduct' do
-    it 'should deduct a specified amount from the oystercard' do
-      expect { subject.deduct(5) }.to change{ subject.balance }.by (-5)
-    end
-  end
 
   describe '#touch_in' do
     it 'should let us touch_in a card' do
@@ -51,6 +45,10 @@ describe Oystercard do
     it "should return false when we touch_out" do
       subject.touch_out
       expect(subject).not_to be_in_journey
+    end
+    
+    it "should deduct money when a user touches out" do
+      expect { subject.touch_out }.to change{ subject.balance}.by (-Oystercard::MinFare)
     end
   end
 
