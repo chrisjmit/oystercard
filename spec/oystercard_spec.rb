@@ -15,6 +15,12 @@ describe Oystercard do
   it "Raises an error if the balance exceeds 90" do
     expect { subject.top_up(100) }.to raise_error 'You cannot exceed a balance of 90'
   end
+  
+  describe '#deduct' do
+    it 'should deduct a specified amount from the oystercard' do
+      expect { subject.deduct(5) }.to change{ subject.balance }.by (-5)
+    end
+  end
 
 
 end
