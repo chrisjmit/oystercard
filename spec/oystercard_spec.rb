@@ -32,9 +32,15 @@ describe Oystercard do
     end
 
     it "should return true when we touch_in" do
+      subject.top_up(1)
       subject.touch_in
       expect(subject).to be_in_journey
     end
+    
+    it "should raise an error if we try to touch in with a balance of less than 1" do
+      expect { subject.touch_in }.to raise_error 'Your balance is below 1 so you cannot travel'
+    end
+      
   end
 
   describe '#touch_out' do
@@ -60,10 +66,12 @@ describe Oystercard do
     end
     
     it "should tell us if we have touched in but not touched out" do
+      subject.top_up(1)
       subject.touch_in
       subject.in_journey?.should be true
     end
-    it "should tell us if we have touched in but not touched out" do
+    it "should tell us if we have touched in and touched out" do
+      subject.top_up(1)
       subject.touch_in
       subject.touch_out
       subject.in_journey?.should be false
