@@ -37,14 +37,16 @@ describe Oystercard do
 
     it "should remember the entry station after we touch in" do
       station1 = double('station')
-      allow(station).to receive(:name) {'waterloo'}
+      allow(station1).to receive(:name) {'waterloo'}
       subject.top_up(1)
-      expect(subject.touch_in).to eq 'waterloo'
+      subject.touch_in(station1.name)
+      expect(subject.entry_station).to eq 'waterloo'
     end
       
   end
 
   describe '#touch_out' do
+    
     it 'should let us touch_out a card' do
       is_expected.to respond_to(:touch_out)
     end
@@ -57,6 +59,16 @@ describe Oystercard do
     it "should deduct money when a user touches out" do
       expect { subject.touch_out }.to change{ subject.balance}.by (-Oystercard::MinFare)
     end
+    
+    it "should 'forget' the entry station after we touch out" do
+      station1 = double('station')
+      allow(station1).to receive(:name) {'waterloo'}
+      subject.top_up(1)
+      subject.touch_in(station1.name)
+      subject.touch_out
+      expect(subject.entry_station).to eq nil
+    end
+    
   end
 
   describe '#in_use' do
@@ -65,22 +77,31 @@ describe Oystercard do
     end
   end
 
-  describe '#in_journey?' do
+  describe '#in_journey?' do 
+  
     it 'should be a method' do
       is_expected.to respond_to(:in_journey?)
     end
     
-    it "should tell us if we have touched in but not touched out" do
-      subject.top_up(1)
-      subject.touch_in
-      subject.in_journey?.should be true
-    end
     it "should tell us if we have touched in and touched out" do
       subject.top_up(1)
       subject.touch_in
       subject.touch_out
       subject.in_journey?.should be false
     end
+    
+    it "should  return true when entry_station is not set to nil" do
+      station1 = double('station')
+      allow(station1).to receive(:name) {'waterloo'}
+      subject.top_up(1)
+      subject.touch_in(station1)
+      subject.in_journey?.should be true
+    end
+    
+    it "should return false when entry_station is set to nil" do
+      subject.in_journey?.should be false
+    end
+    
   end
 
 end
