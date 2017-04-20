@@ -54,17 +54,17 @@ describe Oystercard do
     end
 
     it "should return false when we touch_out" do
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject).not_to be_in_journey
     end
 
     it "should deduct money when a user touches out" do
-      expect { subject.touch_out }.to change{ subject.balance}.by (-Oystercard::MinFare)
+      expect { subject.touch_out(station) }.to change{ subject.balance}.by (-Oystercard::MinFare)
     end
 
     it "should 'forget' the entry station after we touch out" do
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject.entry_station).to eq nil
     end
   end
@@ -75,7 +75,7 @@ describe Oystercard do
     before(:example) { subject.top_up(1) }
 
     it "should tell us if we have touched in and touched out" do
-      subject.touch_out
+      subject.touch_out(station)
       subject.in_journey?.should be false
     end
 
@@ -87,6 +87,24 @@ describe Oystercard do
     it "should return false when entry_station is set to nil" do
       subject.in_journey?.should be false
     end
+  end
+  
+  describe '#journeys' do
+    
+    let(:journey) { double() {entry_station: entry_station, exit_station: exit_station} }
+    
+    before(:example) { subject.top_up(1) }
+    
+    it "should contain an empty list upon instantiation" do
+      expect(subject.journeys).to be_empty
+    end
+    
+    it "should store a journey after touching in and out" do
+      subject.touch_in(entry_station)
+      subject.touch_out(exit_station)
+      expect(subject.journeys).to include journey
+    end
+    
   end
 
 end
