@@ -88,23 +88,25 @@ describe Oystercard do
       subject.in_journey?.should be false
     end
   end
-  
+
   describe '#journeys' do
-    
-    let(:journey) { double() {entry_station: entry_station, exit_station: exit_station} }
-    
+
+    let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
+    let(:entry_station) { double :entry_station }
+    let(:exit_station) { double :exit_station }
+
     before(:example) { subject.top_up(1) }
-    
+
     it "should contain an empty list upon instantiation" do
       expect(subject.journeys).to be_empty
     end
-    
+
     it "should store a journey after touching in and out" do
       subject.touch_in(entry_station)
       subject.touch_out(exit_station)
       expect(subject.journeys).to include journey
     end
-    
+
   end
 
 end
