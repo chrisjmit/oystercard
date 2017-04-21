@@ -20,24 +20,6 @@ describe Oystercard do
     end
   end
 
-  describe '#touch_in' do
-
-    before(:example) { subject.top_up(Oystercard::MinFare) }
-
-    it 'should let us touch_in a card' do
-      is_expected.to respond_to(:touch_in)
-    end
-
-    it "should return true when we touch_in" do
-      subject.touch_in(station)
-      expect(subject).to be_in_journey
-    end
-
-    it "should remember the entry station after we touch in" do
-      subject.touch_in(station)
-      expect(subject.entry_station).to eq station
-    end
-  end
 
   describe '#touch_in_without_balance' do
     it "should raise an error if we try to touch in with a balance of less than 1" do
@@ -76,22 +58,23 @@ describe Oystercard do
 
     it "should tell us if we have touched in and touched out" do
       subject.touch_out(station)
-      subject.in_journey?.should be false
+      expect(subject.in_journey?).to eq false
     end
 
     it "should return true when entry_station is not set to nil" do
       subject.touch_in(station)
-      subject.in_journey?.should be true
+      expect(subject.in_journey?).to eq true
     end
 
     it "should return false when entry_station is set to nil" do
-      subject.in_journey?.should be false
+      expect(subject.in_journey?).to eq false
     end
   end
 
   describe '#journeys' do
 
     let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
+    let(:journey) { double :journey }
     let(:entry_station) { double :entry_station }
     let(:exit_station) { double :exit_station }
 
@@ -105,6 +88,11 @@ describe Oystercard do
       subject.touch_in(entry_station)
       subject.touch_out(exit_station)
       expect(subject.journeys).to include journey
+    end
+
+    it "should push a hash of entry_station" do
+      subject.touch_in("station1")
+      expect(subject.journey).to eq {entry_station}
     end
 
   end
