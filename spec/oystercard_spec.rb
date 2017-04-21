@@ -74,7 +74,6 @@ describe Oystercard do
   describe '#journeys' do
 
     let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
-    let(:journey) { double :journey }
     let(:entry_station) { double :entry_station }
     let(:exit_station) { double :exit_station }
 
@@ -90,9 +89,10 @@ describe Oystercard do
       expect(subject.journeys).to include journey
     end
 
-    it "should push a hash of entry_station" do
-      subject.touch_in("station1")
-      expect(subject.journey).to eq {entry_station}
+      it "should push a hash of entry_station" do
+      p subject.touch_in(entry_station)
+      p expect(subject.journey.array[0]).to eq entry_station
+
     end
 
   end

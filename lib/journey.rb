@@ -1,9 +1,9 @@
 class Journey
 
-  attr_reader :entry_station, :journey
+  attr_reader :entry_station, :array
 
   def initialize
-    @journey = {}
+    @array = []
   end
 
 
